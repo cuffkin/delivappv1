@@ -1,10 +1,9 @@
 import streamlit as st
 import pandas as pd
 import os
-from streamlit_tags import st_tags
 
 # Шаг 1: Загрузка данных
-data_file = os.path.join(os.path.dirname(__file__), 'logisticpricebase.xlsx')
+data_file = 'logisticpricebase.xlsx'  # Убедитесь, что файл logisticpricebase.xlsx находится в том же каталоге, что и app.py
 df = pd.read_excel(data_file)
 
 # Исправление названия столбца
@@ -30,17 +29,9 @@ with tabs[0]:
     st.header("Поиск зон доставки")
 
     options = get_unique_values('Название улиц в зоне', df) + get_unique_values('Название зоны', df)
-    query = st_tags(
-        label='Введите адрес или зону',
-        text='Press enter to add more',
-        value='',
-        suggestions=options,
-        maxtags=1,
-        key='1'
-    )
+    query = st.text_input("Введите адрес или зону", "")
 
     if query:
-        query = query[0]
         matching_results = search_addresses_and_zones(query, df)
         if not matching_results.empty:
             st.dataframe(matching_results)
